@@ -9,9 +9,19 @@ import { supabase } from "../../utils/hooks/supabase";
 
 import Header from "../components/Header";
 import { CHATBOTS } from "./ConversationScreen";
+import { BasicChatbot } from "../chatbots/BasicChatbot";
 
 export default function ChatScreen({ navigation }) {
-  const [chats, setChats] = useState([]);
+  const [chats, setChats] = useState([
+    {
+      BasicChatbot: {
+        id: "BasicChatbot",
+        name: "React Native Chatbot",
+        imageUrl: "https://loremflickr.com/140/140",
+        component: BasicChatbot,
+      },
+    },
+  ]);
   const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
 
@@ -89,7 +99,7 @@ export default function ChatScreen({ navigation }) {
                 size={36}
                 color="lightgrey"
               />
-              <Text style={styles.userName}> {chat.chatId} </Text>
+              <Text style={styles.userName}> {chat.chatbotName} </Text>
               <Ionicons
                 style={styles.userCamera}
                 name="camera-outline"
