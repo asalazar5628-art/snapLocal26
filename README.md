@@ -1,6 +1,6 @@
 # Snap Clone — Starter Project
 
-A minimal Snapchat-look-alike starter for teaching fullstack mobile dev.
+A minimal Snapchat-look-alike starter fullstack mobile dev.
 It ships with exactly two things working end-to-end:
 
 1. A Snapchat-styled **login/sign-up screen** (Supabase Auth, email + password)
