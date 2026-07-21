@@ -58,3 +58,7 @@ src/lib/supabase.js         -- Supabase client (put your keys here)
 src/screens/LoginScreen.jsx  -- Snapchat-styled auth screen
 src/screens/CameraScreen.jsx -- full-screen camera + capture/preview
 ```
+
+
+
+This is a test!
