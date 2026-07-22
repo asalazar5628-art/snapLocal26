@@ -22,6 +22,7 @@ export default function GroupchatScreen({ route }) {
     
 
   const [message, setMessage] = useState("");
+
   const defaultUsername = 
   user?.user_metadata?.username || 
   user?.user_metadata?.full_name || 
@@ -34,7 +35,7 @@ export default function GroupchatScreen({ route }) {
   const [messages, setMessages] = useState([
     {
       id: "1",
-      sender: "bot",
+      sender: "bot1",
       name: "Bob",
       text: "yo have you tried Big Sur Grill?",
       color: "#00A7B5",
