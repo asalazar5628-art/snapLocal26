@@ -1,10 +1,15 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {useState} from "react"
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Header from "../components/Header";
 import BasicChatbot from "../chatbots/BasicChatbot";
+import ChatTabBar from "../components/ChatTabBar";
+
+//state variable for the tabs
+
 
 export const CHATBOTS = {
   BasicChatbot: {
@@ -18,6 +23,7 @@ export const CHATBOTS = {
 export default function ChatScreen({ navigation }) {
   const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
+  const [activeTab, setActiveTab] = useState("My AI");
 
   const chats = Object.values(CHATBOTS);
 
@@ -32,6 +38,8 @@ export default function ChatScreen({ navigation }) {
       ]}
     >
       <Header title="Chat" />
+      <ChatTabBar activeTab={activeTab} onTabChange={setActiveTab}/>
+      {/* {<ScrollView horizontal showsHorizontalScrollIndicator={false} ><Text>Topics</Text></ScrollView>} */}
 
       {chats.map((chat) => (
         <TouchableOpacity
@@ -44,7 +52,7 @@ export default function ChatScreen({ navigation }) {
             })
           }
         >
-          <Ionicons name="person-circle" size={48} color="#D8D8D8" />
+          <Ionicons name="person-circle" size={48} color="#d8d8d8" />
 
           <Text style={styles.userName}>{chat.name}</Text>
 

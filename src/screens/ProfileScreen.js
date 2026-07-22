@@ -23,13 +23,12 @@ export default function ProfileScreen() {
   const navigation = useNavigation();
   const { user } = useAuthentication();
   const [astrology, setAstrology] = useState("Pisces");
-  //const userSign = findAstrologySign();
+  const userSign = findAstrologySign();
 
- /* (useEffect(() => {
+  (useEffect(() => {
     setAstrology(userSign.sign);
   }),
     []);
-    */
 
   return (
     <View style={{ alignItems: "center" }}>
