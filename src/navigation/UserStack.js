@@ -14,6 +14,9 @@ import EventScreen from "../screens/EventScreen"; //New component by Sona and Ch
 import GroupchatScreen from "../screens/GroupchatScreen";
 import LocalSearchScreen from "../screens/LocalSearchScreen";
 
+import { View, Image, Text, TouchableOpacity} from "react-native";
+import Fontisto from "@expo/vector-icons/Fontisto";
+
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -74,7 +77,26 @@ export default function App() {
         <Stack.Screen
           name="SMFoodies"
           component={GroupchatScreen}
-          options={{ headerShown: true}}
+          options={{
+            headerShown: true,
+            headerTitleAlign: "left",
+            headerBackTitleVisible: false,
+            headerBackTitle: " ",
+            headerTitle: () => (
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Image
+                  source={{ uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3tZSfcbr01s0QwJeiCl1oukjMRCkBONm7FZ5c7-MqXg&s" }}
+                  style={{ width: 35, height: 35, borderRadius: 17.5, marginRight: 10, backgroundColor: "#eee" }}
+                />
+                <Text style={{ fontSize: 18, fontWeight: "bold" }}>SMFoodies</Text>
+              </View>
+            ),
+            headerRight: () => (
+              <TouchableOpacity style={{ marginRight: 15 }}>
+                <Fontisto name="map-marker-alt" size={24} color="black" />
+              </TouchableOpacity>
+            ),
+          }}
         />
         <Stack.Screen
           name="LocalSearch"
