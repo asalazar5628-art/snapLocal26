@@ -11,8 +11,13 @@ const TRENDING_TOPICS = [
   { id: "World Cup 2026", name: "#WorldCup26", imageUrl: "https://loremflickr.com/140/140", mutuals: 100, recentlyActive: 6187 },
 ];
 const LOCAL_TOPICS = [
-  { id: "SMFoodies", name: "#SMFoodies", imageUrl: "https://loremflickr.com/140/140", mutuals: 38, recentlyActive: 234, groupchatScreen: "SMFoodies" },
-  { id: "vtahikes", name: "#vtahikes", imageUrl: "https://loremflickr.com/140/140", mutuals: 12, recentlyActive: 109 },
+  { id: "SMFoodies", name: "#SMFoodies", imageUrl: "https://loremflickr.com/140/140", mutuals: 3, recentlyActive: "12.4k", groupchatScreen: "SMFoodies" },
+  { id: "SMCollege", name: "#SMCollege", imageUrl: "https://loremflickr.com/140/140", mutuals: 12, recentlyActive: "8.2k" },
+  { id: "SMThrift", name: "#SMThrift", imageUrl: "https://loremflickr.com/140/140", mutuals: 1, recentlyActive: "45.1k" },
+  { id: "SMEvents", name: "#SMEvents", imageUrl: "https://loremflickr.com/140/140", mutuals: 5, recentlyActive: "3.5k" },
+  { id: "sm-events", name: "#sm-events", imageUrl: "https://loremflickr.com/140/140", mutuals: 2, recentlyActive: "89.3k" },
+  { id: "SMHikes", name: "#SM~Hikes", imageUrl: "https://loremflickr.com/140/140", mutuals: 8, recentlyActive: "21.0k" },
+  { id: "SMViews", name: "#SMViews", imageUrl: "https://loremflickr.com/140/140", mutuals: 4, recentlyActive: "15.8k" },
 ];
 
 export default function TopicsTab({ navigation }){
@@ -20,9 +25,9 @@ export default function TopicsTab({ navigation }){
     const [currTab, setCurrTab] = useState("Trending");
 
     return(
-        <View>
+        <View style={styles.wrapper}>
 
-            <ScrollView 
+            <ScrollView
                 horizontal 
                 showsHorizontalScrollIndicator = {false} 
                 style={styles.container}
@@ -48,12 +53,23 @@ export default function TopicsTab({ navigation }){
                 : LOCAL_TOPICS.map((topic) => (
                     <TopicListItem key={topic.id} topic={topic} navigation={navigation} />
                 ))}
+
+            <TouchableOpacity
+                style={styles.findTopicButton}
+                onPress={() => navigation.navigate("LocalSearch")}
+            >
+                <Text style={styles.findTopicIcon}>🔍</Text>
+                <Text style={styles.findTopicText}>Find a Topic</Text>
+            </TouchableOpacity>
         </View>
     )
 
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+  },
   container: {
     flexGrow: 0,
     borderBottomWidth: 1,
@@ -92,5 +108,25 @@ const styles = StyleSheet.create({
   },
   emojiText: {
     fontSize: 20,
+  },
+  findTopicButton: {
+    position: "absolute",
+    alignSelf: "center",
+    bottom: 24,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "rgba(35, 35, 35, 0.9)",
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderRadius: 100,
+  },
+  findTopicIcon: {
+    fontSize: 16,
+  },
+  findTopicText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "700",
   },
 });

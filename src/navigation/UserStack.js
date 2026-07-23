@@ -12,6 +12,7 @@ import AstrologyScreen from "../screens/AstrologyScreen";
 import MemoryScreen from "../screens/MemoryScreen";
 import EventScreen from "../screens/EventScreen"; //New component by Sona and Christian
 import GroupchatScreen from "../screens/GroupchatScreen";
+import LocalSearchScreen from "../screens/LocalSearchScreen";
 
 const Stack = createStackNavigator();
 
@@ -74,6 +75,11 @@ export default function App() {
           name="SMFoodies"
           component={GroupchatScreen}
           options={{ headerShown: true}}
+        />
+        <Stack.Screen
+          name="LocalSearch"
+          component={LocalSearchScreen}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>
