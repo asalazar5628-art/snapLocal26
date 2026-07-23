@@ -13,16 +13,6 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 // --- MOCK DATA ---
-<<<<<<< HEAD
-const TOPIC_CHATS = [
-  { id: "1", topic: "#SMFoodies", members: "12.4k", mutuals: 3, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3tZSfcbr01s0QwJeiCl1oukjMRCkBONm7FZ5c7-MqXg&s" },
-  { id: "2", topic: "#SMCollege", members: "8.2k", mutuals: 12, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-GZDbngOspl87WUFbbe7JODak1wuSv-7hSwNv8EJUgg&s" },
-  { id: "3", topic: "#SMThrift", members: "45.1k", mutuals: 1, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXlRfj0E7KJzvN4-KNV6pNNGNhiCvqZFtlJ4ji6sDbnw&s" },
-  { id: "4", topic: "#SMEvents", members: "3.5k", mutuals: 5, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTa-Qsh1WAATc2GR1kV6KXgKChXcfB0vVnWGa6zrjoiBQ&s=10" },
-  { id: "5", topic: "#sm-events", members: "89.3k", mutuals: 2, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-eNimjWONltkcgk_wtJ4Q-Q59tNSKcVc-1_ECUVsawQ&s=10" },
-  { id: "6", topic: "#SM~Hikes", members: "21.0k", mutuals: 8, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4YncgVwA9N3i6Qwo_lHNwoBp7dfI6hzbJAMT783tgJg&s=10" },
-  { id: "7", topic: "#SMViews", members: "15.8k", mutuals: 4, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRQttmT0lgUvH_bsfcQc8akQVxrGwERR78luVLXB3e6w&s=10" },
-=======
 const LOCAL_TOPICS = [
   { id: "SMFoodies", name: "#SMFoodies", imageUrl: "https://loremflickr.com/140/140", mutuals: 3, recentlyActive: "12.4k", groupchatScreen: "SMFoodies" },
   { id: "SMCollege", name: "#SMCollege", imageUrl: "https://loremflickr.com/140/140", mutuals: 12, recentlyActive: "8.2k" },
@@ -31,7 +21,6 @@ const LOCAL_TOPICS = [
   { id: "sm-events", name: "#sm-events", imageUrl: "https://loremflickr.com/140/140", mutuals: 2, recentlyActive: "89.3k" },
   { id: "SMHikes", name: "#SM~Hikes", imageUrl: "https://loremflickr.com/140/140", mutuals: 8, recentlyActive: "21.0k" },
   { id: "SMViews", name: "#SMViews", imageUrl: "https://loremflickr.com/140/140", mutuals: 4, recentlyActive: "15.8k" },
->>>>>>> main
 ];
 
 // Snapchat brand palette
@@ -53,15 +42,8 @@ export default function LocalSearchScreen({ navigation }) {
 
   const renderTopicChat = ({ item }) => (
     <TouchableOpacity style={styles.chatRow} activeOpacity={0.7}>
-<<<<<<< HEAD
-      <Image 
-        source={{ uri: item.image }} 
-        style={styles.avatarImage} 
-      />
-=======
       {/* Squircle Avatar / Icon */}
       <Image source={{ uri: item.imageUrl }} style={styles.avatarPlaceholder} />
->>>>>>> main
 
       {/* Chat Info */}
       <View style={styles.chatInfo}>
