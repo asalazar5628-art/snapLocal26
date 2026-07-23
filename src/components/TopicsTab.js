@@ -25,9 +25,9 @@ export default function TopicsTab({ navigation }){
     const [currTab, setCurrTab] = useState("Trending");
 
     return(
-        <View>
+        <View style={styles.wrapper}>
 
-            <ScrollView 
+            <ScrollView
                 horizontal 
                 showsHorizontalScrollIndicator = {false} 
                 style={styles.container}
@@ -53,12 +53,23 @@ export default function TopicsTab({ navigation }){
                 : LOCAL_TOPICS.map((topic) => (
                     <TopicListItem key={topic.id} topic={topic} navigation={navigation} />
                 ))}
+
+            <TouchableOpacity
+                style={styles.findTopicButton}
+                onPress={() => navigation.navigate("LocalSearch")}
+            >
+                <Text style={styles.findTopicIcon}>🔍</Text>
+                <Text style={styles.findTopicText}>Find a Topic</Text>
+            </TouchableOpacity>
         </View>
     )
 
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+  },
   container: {
     flexGrow: 0,
     borderBottomWidth: 1,
@@ -97,5 +108,25 @@ const styles = StyleSheet.create({
   },
   emojiText: {
     fontSize: 20,
+  },
+  findTopicButton: {
+    position: "absolute",
+    alignSelf: "center",
+    bottom: 24,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "rgba(35, 35, 35, 0.9)",
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderRadius: 100,
+  },
+  findTopicIcon: {
+    fontSize: 16,
+  },
+  findTopicText: {
+    color: "#fff",
+    fontSize: 15,
+    fontWeight: "700",
   },
 });
