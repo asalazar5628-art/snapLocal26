@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useAuthentication } from "../../utils/hooks/useAuthentication";
 import AnonModal from "../components/AnonModal";
+import Fontisto from '@expo/vector-icons/Fontisto';
 import {
   SafeAreaView,
   View,
@@ -193,23 +194,24 @@ export default function GroupchatScreen({ route }) {
         onSelectChoice={handleModalChoice}
       />
       {/* HEADER */}
-
-      {/* <View style={styles.header}>
+       { /*
+       <View style={styles.header}>
         <Ionicons name="chevron-back" size={32} />
 
         <View style={styles.avatar}>
           <Text>🙂</Text>
         </View>
 
-        <Text style={styles.username}>{chatbotName}</Text>
+        <Text style={styles.username}>{"SMFoodies"}</Text>
 
         <View style={styles.headerIcons}>
           <Ionicons name="call" size={23} />
 
           <Ionicons name="videocam" size={25} />
+          <Fontisto name="map-marker-alt" size={24} color="black" />
         </View>
-      </View> */}
-
+      </View> 
+        */}
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
