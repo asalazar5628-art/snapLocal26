@@ -40,7 +40,7 @@ export default function ChatScreen({ navigation }) {
     >
       <Header title="Chat" />
       <ChatTabBar activeTab={activeTab} onTabChange={setActiveTab}/>
-       {activeTab === "My AI" ? chats.map((chat) => (
+       {activeTab === "Topics" ? <TopicsTab navigation={navigation} /> : chats.map((chat) => (
         <TouchableOpacity
           key={chat.id}
           style={styles.userButton}
@@ -57,7 +57,7 @@ export default function ChatScreen({ navigation }) {
 
           <Ionicons name="camera-outline" size={24} color="#999" />
         </TouchableOpacity>
-      )) : <TopicsTab navigation={navigation} /> }
+      ))}
    
     </View>
   );
