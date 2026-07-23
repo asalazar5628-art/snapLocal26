@@ -57,7 +57,7 @@ export default function ChatScreen({ navigation }) {
 
           <Ionicons name="camera-outline" size={24} color="#999" />
         </TouchableOpacity>
-      )) : <TopicsTab/> }
+      )) : <TopicsTab navigation={navigation} /> }
    
     </View>
   );
