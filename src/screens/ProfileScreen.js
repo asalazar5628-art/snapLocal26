@@ -2,7 +2,7 @@ import { Image, Text, View, Button, StyleSheet, Pressable } from "react-native";
 import { supabase } from "../../utils/hooks/supabase";
 import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-// import { findAstrologySign } from "../../utils/hooks/supabase";
+ import { findAstrologySign } from "../../utils/hooks/supabase";
 import { useAuthentication } from "../../utils/hooks/useAuthentication";
 
 const handleSignOut = async () => {
@@ -19,15 +19,16 @@ const handleSignOut = async () => {
 };
 
 export default function ProfileScreen() {
+  
   const navigation = useNavigation();
   const { user } = useAuthentication();
   const [astrology, setAstrology] = useState("Pisces");
-  // const userSign = findAstrologySign();
+  const userSign = findAstrologySign();
 
-  // (useEffect(() => {
-  //   setAstrology(userSign.sign);
-  // }),
-  //   []);
+  (useEffect(() => {
+    setAstrology(userSign.sign);
+  }),
+    []);
 
   return (
     <View style={{ alignItems: "center" }}>
