@@ -11,6 +11,7 @@ import FriendStory from "../screens/FriendStory";
 import AstrologyScreen from "../screens/AstrologyScreen";
 import MemoryScreen from "../screens/MemoryScreen";
 import EventScreen from "../screens/EventScreen"; //New component by Sona and Christian
+import GroupchatScreen from "../screens/GroupchatScreen";
 
 const Stack = createStackNavigator();
 
@@ -68,6 +69,11 @@ export default function App() {
           name="Event"
           component={EventScreen}
           options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="SMFoodies"
+          component={GroupchatScreen}
+          options={{ headerShown: true}}
         />
       </Stack.Navigator>
     </NavigationContainer>
