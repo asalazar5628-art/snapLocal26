@@ -3,21 +3,23 @@ import {
   View,
   Text,
   TextInput,
+  Image,
   FlatList,
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
 } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 // --- MOCK DATA ---
-const TOPIC_CHATS = [
-  { id: "1", topic: "#SMFoodies", members: "12.4k", color: "#FF5252", mutuals: 3 },
-  { id: "2", topic: "#SMCollege", members: "8.2k", color: "#FF4081", mutuals: 12 },
-  { id: "3", topic: "#SMThrift", members: "45.1k", color: "#7C4DFF", mutuals: 1 },
-  { id: "4", topic: "#SMEvents", members: "3.5k", color: "#536DFE", mutuals: 5 },
-  { id: "5", topic: "#sm-events", members: "89.3k", color: "#00BCD4", mutuals: 2 },
-  { id: "6", topic: "#SM~Hikes", members: "21.0k", color: "#69F0AE", mutuals: 8 },
-  { id: "7", topic: "#SMViews", members: "15.8k", color: "#FFAB40", mutuals: 4 },
+const LOCAL_TOPICS = [
+  { id: "SMFoodies", name: "#SMFoodies", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3tZSfcbr01s0QwJeiCl1oukjMRCkBONm7FZ5c7-MqXg&s", mutuals: 3, recentlyActive: "12.4k", groupchatScreen: "SMFoodies" },
+  { id: "SMCollege", name: "#SMCollege", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-GZDbngOspl87WUFbbe7JODak1wuSv-7hSwNv8EJUgg&s", mutuals: 12, recentlyActive: "8.2k" },
+  { id: "SMThrift", name: "#SMThrift", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXlRfj0E7KJzvN4-KNV6pNNGNhiCvqZFtlJ4ji6sDbnw&s", mutuals: 1, recentlyActive: "45.1k" },
+  { id: "SMEvents", name: "#SMEvents", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTa-Qsh1WAATc2GR1kV6KXgKChXcfB0vVnWGa6zrjoiBQ&s=10", mutuals: 5, recentlyActive: "3.5k" },
+  { id: "sm-events", name: "#sm-events", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-eNimjWONltkcgk_wtJ4Q-Q59tNSKcVc-1_ECUVsawQ&s=10", mutuals: 2, recentlyActive: "89.3k" },
+  { id: "SMHikes", name: "#SM~Hikes", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4YncgVwA9N3i6Qwo_lHNwoBp7dfI6hzbJAMT783tgJg&s=10", mutuals: 8, recentlyActive: "21.0k" },
+  { id: "SMViews", name: "#SMViews", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRQttmT0lgUvH_bsfcQc8akQVxrGwERR78luVLXB3e6w&s=10", mutuals: 4, recentlyActive: "15.8k" },
 ];
 
 // Snapchat brand palette
@@ -27,31 +29,34 @@ const SNAP_BLACK = "#0D0D0D";
 export default function LocalSearchScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredChats = TOPIC_CHATS.filter((chat) => { // render the array of items we want to display after they search something
+  const filteredChats = LOCAL_TOPICS.filter((topic) => { // render the array of items we want to display after they search something
     // If the search is empty, this naturally returns all items
-    return chat.topic.toLowerCase().includes(searchQuery.toLowerCase());
-  }); 
+    return topic.name.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
+  function handleJoinPress(item) {
+    if (!item.groupchatScreen) return;
+    navigation.navigate(item.groupchatScreen, { chatbotName: item.name });
+  }
 
   const renderTopicChat = ({ item }) => (
     <TouchableOpacity style={styles.chatRow} activeOpacity={0.7}>
       {/* Squircle Avatar / Icon */}
-      <View style={[styles.avatarPlaceholder, { backgroundColor: item.color }]}>
-        <Text style={styles.avatarText}>{item.topic.charAt(1)}</Text>
-      </View>
+      <Image source={{ uri: item.imageUrl }} style={styles.avatarPlaceholder} />
 
       {/* Chat Info */}
       <View style={styles.chatInfo}>
-        <Text style={styles.chatTopic}>{item.topic}</Text>
-        <Text style={styles.chatMembers}>{item.members} joined</Text>
-        {/* NEW: Stacked directly underneath the active members */}
+        <Text style={styles.chatTopic}>{item.name}</Text>
         <Text style={styles.chatMembers}>{item.mutuals} mutuals</Text>
+        {/* NEW: Stacked directly underneath the mutuals */}
+        <Text style={styles.chatMembers}>{item.recentlyActive} recently active</Text>
       </View>
 
       {/* Join Button */}
-      <View style={styles.joinButton}>
-        <Text style={styles.joinButtonIcon}>💬</Text>
+      <TouchableOpacity style={styles.joinButton} onPress={() => handleJoinPress(item)}>
+        <Ionicons name="chatbubble-outline" size={14} color="#000" />
         <Text style={styles.joinButtonText}>Join the Chat</Text>
-      </View>
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 
@@ -92,8 +97,7 @@ export default function LocalSearchScreen({ navigation }) {
 
         <View style={styles.listCard}>
           <FlatList
-            // data={TOPIC_CHATS}
-            data = {filteredChats}
+            data={filteredChats}
             keyExtractor={(item) => item.id}
             renderItem={renderTopicChat}
             showsVerticalScrollIndicator={false}
@@ -202,17 +206,15 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  avatarText: {
-    color: "#FFF",
-    fontSize: 18,
-    fontWeight: "bold",
   },
   chatInfo: {
     flex: 1,
     marginLeft: 14,
+  },avatarImage: {
+    width: 46,
+    height: 46,
+    borderRadius: 12,
+    backgroundColor: "#EBECEE", // Light grey placeholder before image loads
   },
   chatTopic: {
     fontSize: 16,
@@ -229,18 +231,15 @@ const styles = StyleSheet.create({
   joinButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: SNAP_YELLOW,
+    gap: 4,
+    backgroundColor: "#FFFC00",
+    borderRadius: 100,
     paddingHorizontal: 12,
-    paddingVertical: 9,
-    borderRadius: 20,
-    gap: 6,
-  },
-  joinButtonIcon: {
-    fontSize: 12,
+    paddingVertical: 8,
   },
   joinButtonText: {
-    fontSize: 11,
-    fontWeight: "800",
-    color: SNAP_BLACK,
+    fontSize: 13,
+    fontWeight: "700",
+    color: "#000",
   },
 });
