@@ -76,10 +76,10 @@ const styles = StyleSheet.create({
     marginVertical: 6,
   },
   primaryButton: {
-    backgroundColor: "#FF2D55", // Snapchat-style primary accent
+    backgroundColor: "#FFFC00", 
   },
   primaryButtonText: {
-    color: "#fff",
+    color: "#333",
     fontSize: 16,
     fontWeight: "600",
   },
