@@ -6,18 +6,18 @@ import TopicListItem from "./TopicListItem";
 
 const SUBTABS = ["Trending", "Local"];
 const TRENDING_TOPICS = [
-  { id: "Love Island", name: "#LoveIsland", imageUrl: "https://loremflickr.com/140/140", mutuals: 10, recentlyActive: 2039 },
-  { id: "Major League BaseBall", name: "#MLB", imageUrl: "https://loremflickr.com/140/140", mutuals: 5, recentlyActive: 844 },
-  { id: "World Cup 2026", name: "#WorldCup26", imageUrl: "https://loremflickr.com/140/140", mutuals: 100, recentlyActive: 6187 },
+  { id: "Love Island", name: "#LoveIsland", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxssDLDxg8yus9AcjncgzaAIt0kIyox90VR86LUUXoOg&s=10", mutuals: 10, recentlyActive: 2039 },
+  { id: "Major League BaseBall", name: "#MLB", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLCGljhCqYEwteTKOPUvpUGHWgqyAmUgpyNGbwgcxHAg&s=10", mutuals: 5, recentlyActive: 844 },
+  { id: "World Cup 2026", name: "#WorldCup26", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeUzgEU7RfWoeMtJWNB_B0jnfLTwEl3wdiT1Ig7SDYCg&s=10", mutuals: 100, recentlyActive: 6187 },
 ];
 const LOCAL_TOPICS = [
-  { id: "SMFoodies", name: "#SMFoodies", imageUrl: "https://loremflickr.com/140/140", mutuals: 3, recentlyActive: "12.4k", groupchatScreen: "SMFoodies" },
-  { id: "SMCollege", name: "#SMCollege", imageUrl: "https://loremflickr.com/140/140", mutuals: 12, recentlyActive: "8.2k" },
-  { id: "SMThrift", name: "#SMThrift", imageUrl: "https://loremflickr.com/140/140", mutuals: 1, recentlyActive: "45.1k" },
-  { id: "SMEvents", name: "#SMEvents", imageUrl: "https://loremflickr.com/140/140", mutuals: 5, recentlyActive: "3.5k" },
-  { id: "sm-events", name: "#sm-events", imageUrl: "https://loremflickr.com/140/140", mutuals: 2, recentlyActive: "89.3k" },
-  { id: "SMHikes", name: "#SM~Hikes", imageUrl: "https://loremflickr.com/140/140", mutuals: 8, recentlyActive: "21.0k" },
-  { id: "SMViews", name: "#SMViews", imageUrl: "https://loremflickr.com/140/140", mutuals: 4, recentlyActive: "15.8k" },
+  { id: "SMFoodies", name: "#SMFoodies", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3tZSfcbr01s0QwJeiCl1oukjMRCkBONm7FZ5c7-MqXg&s", mutuals: 3, recentlyActive: "12.4k", groupchatScreen: "SMFoodies" },
+  { id: "SMCollege", name: "#SMCollege", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-GZDbngOspl87WUFbbe7JODak1wuSv-7hSwNv8EJUgg&s", mutuals: 12, recentlyActive: "8.2k" },
+  { id: "SMThrift", name: "#SMThrift", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXlRfj0E7KJzvN4-KNV6pNNGNhiCvqZFtlJ4ji6sDbnw&s", mutuals: 1, recentlyActive: "45.1k" },
+  { id: "SMEvents", name: "#SMEvents", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTa-Qsh1WAATc2GR1kV6KXgKChXcfB0vVnWGa6zrjoiBQ&s=10", mutuals: 5, recentlyActive: "3.5k" },
+  { id: "sm-events", name: "#sm-events", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-eNimjWONltkcgk_wtJ4Q-Q59tNSKcVc-1_ECUVsawQ&s=10", mutuals: 2, recentlyActive: "89.3k" },
+  { id: "SMHikes", name: "#SM~Hikes", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4YncgVwA9N3i6Qwo_lHNwoBp7dfI6hzbJAMT783tgJg&s=10", mutuals: 8, recentlyActive: "21.0k" },
+  { id: "SMViews", name: "#SMViews", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRQttmT0lgUvH_bsfcQc8akQVxrGwERR78luVLXB3e6w&s=10", mutuals: 4, recentlyActive: "15.8k" },
 ];
 
 export default function TopicsTab({ navigation }){

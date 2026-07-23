@@ -7,17 +7,18 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  Image,
 } from "react-native";
 
 // --- MOCK DATA ---
 const TOPIC_CHATS = [
-  { id: "1", topic: "#SMFoodies", members: "12.4k", color: "#FF5252", mutuals: 3 },
-  { id: "2", topic: "#SMCollege", members: "8.2k", color: "#FF4081", mutuals: 12 },
-  { id: "3", topic: "#SMThrift", members: "45.1k", color: "#7C4DFF", mutuals: 1 },
-  { id: "4", topic: "#SMEvents", members: "3.5k", color: "#536DFE", mutuals: 5 },
-  { id: "5", topic: "#sm-events", members: "89.3k", color: "#00BCD4", mutuals: 2 },
-  { id: "6", topic: "#SM~Hikes", members: "21.0k", color: "#69F0AE", mutuals: 8 },
-  { id: "7", topic: "#SMViews", members: "15.8k", color: "#FFAB40", mutuals: 4 },
+  { id: "1", topic: "#SMFoodies", members: "12.4k", mutuals: 3, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3tZSfcbr01s0QwJeiCl1oukjMRCkBONm7FZ5c7-MqXg&s" },
+  { id: "2", topic: "#SMCollege", members: "8.2k", mutuals: 12, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-GZDbngOspl87WUFbbe7JODak1wuSv-7hSwNv8EJUgg&s" },
+  { id: "3", topic: "#SMThrift", members: "45.1k", mutuals: 1, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXlRfj0E7KJzvN4-KNV6pNNGNhiCvqZFtlJ4ji6sDbnw&s" },
+  { id: "4", topic: "#SMEvents", members: "3.5k", mutuals: 5, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTa-Qsh1WAATc2GR1kV6KXgKChXcfB0vVnWGa6zrjoiBQ&s=10" },
+  { id: "5", topic: "#sm-events", members: "89.3k", mutuals: 2, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-eNimjWONltkcgk_wtJ4Q-Q59tNSKcVc-1_ECUVsawQ&s=10" },
+  { id: "6", topic: "#SM~Hikes", members: "21.0k", mutuals: 8, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4YncgVwA9N3i6Qwo_lHNwoBp7dfI6hzbJAMT783tgJg&s=10" },
+  { id: "7", topic: "#SMViews", members: "15.8k", mutuals: 4, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRQttmT0lgUvH_bsfcQc8akQVxrGwERR78luVLXB3e6w&s=10" },
 ];
 
 // Snapchat brand palette
@@ -34,10 +35,10 @@ export default function LocalSearchScreen({ navigation }) {
 
   const renderTopicChat = ({ item }) => (
     <TouchableOpacity style={styles.chatRow} activeOpacity={0.7}>
-      {/* Squircle Avatar / Icon */}
-      <View style={[styles.avatarPlaceholder, { backgroundColor: item.color }]}>
-        <Text style={styles.avatarText}>{item.topic.charAt(1)}</Text>
-      </View>
+      <Image 
+        source={{ uri: item.image }} 
+        style={styles.avatarImage} 
+      />
 
       {/* Chat Info */}
       <View style={styles.chatInfo}>
@@ -213,6 +214,11 @@ const styles = StyleSheet.create({
   chatInfo: {
     flex: 1,
     marginLeft: 14,
+  },avatarImage: {
+    width: 46,
+    height: 46,
+    borderRadius: 12,
+    backgroundColor: "#EBECEE", // Light grey placeholder before image loads
   },
   chatTopic: {
     fontSize: 16,
