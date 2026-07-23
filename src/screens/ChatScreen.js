@@ -7,6 +7,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Header from "../components/Header";
 import BasicChatbot from "../chatbots/BasicChatbot";
 import ChatTabBar from "../components/ChatTabBar";
+import TopicsTab from "../components/TopicsTab";
 
 //state variable for the tabs
 
@@ -23,7 +24,7 @@ export const CHATBOTS = {
 export default function ChatScreen({ navigation }) {
   const insets = useSafeAreaInsets();
   const tabBarHeight = useBottomTabBarHeight();
-  const [activeTab, setActiveTab] = useState("My AI");
+  const [activeTab, setActiveTab] = useState("");
 
   const chats = Object.values(CHATBOTS);
 
@@ -39,9 +40,7 @@ export default function ChatScreen({ navigation }) {
     >
       <Header title="Chat" />
       <ChatTabBar activeTab={activeTab} onTabChange={setActiveTab}/>
-      {/* {<ScrollView horizontal showsHorizontalScrollIndicator={false} ><Text>Topics</Text></ScrollView>} */}
-
-      {chats.map((chat) => (
+       {activeTab === "My AI" ? chats.map((chat) => (
         <TouchableOpacity
           key={chat.id}
           style={styles.userButton}
@@ -58,7 +57,8 @@ export default function ChatScreen({ navigation }) {
 
           <Ionicons name="camera-outline" size={24} color="#999" />
         </TouchableOpacity>
-      ))}
+      )) : <TopicsTab/> }
+   
     </View>
   );
 }
