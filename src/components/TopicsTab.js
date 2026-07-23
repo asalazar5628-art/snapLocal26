@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { colors } from "../../assets/themes/colors";
+import TopicListItem from "./TopicListItem";
 
 
 const SUBTABS = ["Trending", "Local"];
@@ -10,11 +11,11 @@ const TRENDING_TOPICS = [
   { id: "World Cup 2026", name: "#WorldCup26", imageUrl: "https://loremflickr.com/140/140", mutuals: 100, recentlyActive: 6187 },
 ];
 const LOCAL_TOPICS = [
-  { id: "SMFoodies", name: "#SMFoodies", imageUrl: "https://loremflickr.com/140/140", mutuals: 38, recentlyActive: 234 },
+  { id: "SMFoodies", name: "#SMFoodies", imageUrl: "https://loremflickr.com/140/140", mutuals: 38, recentlyActive: 234, groupchatScreen: "SMFoodies" },
   { id: "vtahikes", name: "#vtahikes", imageUrl: "https://loremflickr.com/140/140", mutuals: 12, recentlyActive: 109 },
 ];
 
-export default function TopicsTab(){
+export default function TopicsTab({ navigation }){
     //state variable for the rendered tab
     const [currTab, setCurrTab] = useState("Trending");
 
@@ -40,16 +41,13 @@ export default function TopicsTab(){
                 ) )}
             </ScrollView>
 
-            {currTab === "Trending" ? <View><Text>hell</Text></View> : LOCAL_TOPICS.map((topic) => (
-                <TouchableOpacity key={topic.id} style={styles.topicRow}>
-                    <Image source={{ uri: topic.imageUrl }} style={styles.topicImage} />
-                    <View style={styles.topicInfo}>
-                        <Text style={styles.topicName}>{topic.name}</Text>
-                        <Text style={styles.topicMeta}>{topic.mutuals} mutuals</Text>
-                        <Text style={styles.topicMeta}>{topic.recentlyActive} recently active</Text>
-                    </View>
-                </TouchableOpacity>
-            ))}
+            {currTab === "Trending"
+                ? TRENDING_TOPICS.map((topic) => (
+                    <TopicListItem key={topic.id} topic={topic} navigation={navigation} />
+                ))
+                : LOCAL_TOPICS.map((topic) => (
+                    <TopicListItem key={topic.id} topic={topic} navigation={navigation} />
+                ))}
         </View>
     )
 
@@ -94,33 +92,5 @@ const styles = StyleSheet.create({
   },
   emojiText: {
     fontSize: 20,
-  },
-  topicRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderColor: "#EFEFEF",
-  },
-  topicImage: {
-    width: 48,
-    height: 48,
-    borderRadius: 8,
-    marginRight: 12,
-  },
-  topicInfo: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  topicName: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: colors.primary,
-  },
-  topicMeta: {
-    fontSize: 13,
-    color: colors.tertiary,
   },
 });
