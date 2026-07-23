@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { colors } from "../../assets/themes/colors";
 import TopicListItem from "./TopicListItem";
+import { supabase } from "../../utils/hooks/supabase";
 
 
 const SUBTABS = ["Trending", "Local"];
@@ -10,19 +11,37 @@ const TRENDING_TOPICS = [
   { id: "Major League BaseBall", name: "#MLB", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLCGljhCqYEwteTKOPUvpUGHWgqyAmUgpyNGbwgcxHAg&s=10", mutuals: 5, recentlyActive: 844 },
   { id: "World Cup 2026", name: "#WorldCup26", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSeUzgEU7RfWoeMtJWNB_B0jnfLTwEl3wdiT1Ig7SDYCg&s=10", mutuals: 100, recentlyActive: 6187 },
 ];
-const LOCAL_TOPICS = [
-  { id: "SMFoodies", name: "#SMFoodies", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3tZSfcbr01s0QwJeiCl1oukjMRCkBONm7FZ5c7-MqXg&s", mutuals: 3, recentlyActive: "12.4k", groupchatScreen: "SMFoodies" },
-  { id: "SMCollege", name: "#SMCollege", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-GZDbngOspl87WUFbbe7JODak1wuSv-7hSwNv8EJUgg&s", mutuals: 12, recentlyActive: "8.2k" },
-  { id: "SMThrift", name: "#SMThrift", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXlRfj0E7KJzvN4-KNV6pNNGNhiCvqZFtlJ4ji6sDbnw&s", mutuals: 1, recentlyActive: "45.1k" },
-  { id: "SMEvents", name: "#SMEvents", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTa-Qsh1WAATc2GR1kV6KXgKChXcfB0vVnWGa6zrjoiBQ&s=10", mutuals: 5, recentlyActive: "3.5k" },
-  { id: "sm-events", name: "#sm-events", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-eNimjWONltkcgk_wtJ4Q-Q59tNSKcVc-1_ECUVsawQ&s=10", mutuals: 2, recentlyActive: "89.3k" },
-  { id: "SMHikes", name: "#SM~Hikes", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4YncgVwA9N3i6Qwo_lHNwoBp7dfI6hzbJAMT783tgJg&s=10", mutuals: 8, recentlyActive: "21.0k" },
-  { id: "SMViews", name: "#SMViews", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRQttmT0lgUvH_bsfcQc8akQVxrGwERR78luVLXB3e6w&s=10", mutuals: 4, recentlyActive: "15.8k" },
-];
+// const LOCAL_TOPICS = [
+//   { id: "SMFoodies", name: "#SMFoodies", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3tZSfcbr01s0QwJeiCl1oukjMRCkBONm7FZ5c7-MqXg&s", mutuals: 3, recentlyActive: "12.4k", groupchatScreen: "SMFoodies" },
+//   { id: "SMCollege", name: "#SMCollege", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-GZDbngOspl87WUFbbe7JODak1wuSv-7hSwNv8EJUgg&s", mutuals: 12, recentlyActive: "8.2k" },
+//   { id: "SMThrift", name: "#SMThrift", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXlRfj0E7KJzvN4-KNV6pNNGNhiCvqZFtlJ4ji6sDbnw&s", mutuals: 1, recentlyActive: "45.1k" },
+//   { id: "SMEvents", name: "#SMEvents", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTa-Qsh1WAATc2GR1kV6KXgKChXcfB0vVnWGa6zrjoiBQ&s=10", mutuals: 5, recentlyActive: "3.5k" },
+//   { id: "sm-events", name: "#sm-events", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-eNimjWONltkcgk_wtJ4Q-Q59tNSKcVc-1_ECUVsawQ&s=10", mutuals: 2, recentlyActive: "89.3k" },
+//   { id: "SMHikes", name: "#SM~Hikes", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4YncgVwA9N3i6Qwo_lHNwoBp7dfI6hzbJAMT783tgJg&s=10", mutuals: 8, recentlyActive: "21.0k" },
+//   { id: "SMViews", name: "#SMViews", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRQttmT0lgUvH_bsfcQc8akQVxrGwERR78luVLXB3e6w&s=10", mutuals: 4, recentlyActive: "15.8k" },
+// ];
 
 export default function TopicsTab({ navigation }){
     //state variable for the rendered tab
     const [currTab, setCurrTab] = useState("Trending");
+    const [localTopics, setLocalTopics] = useState([]);
+
+    useEffect(() => {
+        async function fetchLocalTopics() {
+            const { data, error } = await supabase
+                .from("Topics")
+                .select("*");
+            if (error) {
+                console.error("Error fetching topics:", error.message);
+                return;
+            }
+            if (data) {
+                setLocalTopics(data);
+            }
+        }
+
+        fetchLocalTopics();
+    }, []);
 
     return(
         <View style={styles.wrapper}>
@@ -50,7 +69,7 @@ export default function TopicsTab({ navigation }){
                 ? TRENDING_TOPICS.map((topic) => (
                     <TopicListItem key={topic.id} topic={topic} navigation={navigation} />
                 ))
-                : LOCAL_TOPICS.map((topic) => (
+                : localTopics.map((topic) => (
                     <TopicListItem key={topic.id} topic={topic} navigation={navigation} />
                 ))}
 
