@@ -1,7 +1,4 @@
-import React, { useState, useRef } from "react";
-import { useAuthentication } from "../../utils/hooks/useAuthentication";
-import AnonModal from "../components/AnonModal";
-import Fontisto from '@expo/vector-icons/Fontisto';
+import React, { useState, useEffect, useRef } from "react";
 import {
   SafeAreaView,
   View,
@@ -13,172 +10,128 @@ import {
   Platform,
   StyleSheet,
 } from "react-native";
-
 import Ionicons from "@expo/vector-icons/Ionicons";
 
+// Hooks & Components
+import { useAuthentication } from "../../utils/hooks/useAuthentication";
+import { supabase } from "../../utils/hooks/supabase";
+import AnonModal from "../components/AnonModal";
+
 export default function GroupchatScreen({ route }) {
-  const { chatbotName } = route.params;
+  // Extract params or fall back to default room defaults
+  const { groupId, chatbotName } = route.params || {};
+  const targetGroupId = groupId || chatbotName || "SMFoodies";
+
   const { user } = useAuthentication();
   const [showModal, setShowModal] = useState(true);
-    
-
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
 
-  const defaultUsername = 
-  user?.user_metadata?.username || 
-  user?.user_metadata?.full_name || 
-  user?.email?.split('@')[0] || 
-  "ME";
-    const [responseIndex,setResponseIndex] = useState(0);
-  const [premadeResponses,setpremadeResponses] = useState(
-    ["I recommend Provecho CaliMex! It's got authentic flavors and it's not that expensive!","YEEESSSS","dude do not go there the food took forever to come out",
-        "There's a little cafe on the way that is usually really quiet","My wife left me and took the kids"
+  // Determine user's fallback username
+  const defaultUsername =
+    user?.user_metadata?.username ||
+    user?.user_metadata?.full_name ||
+    user?.email?.split("@")[0] ||
+    "ME";
 
-  ]);
-
-  const [responses, setResponses] = useState([
-    {
-      id: "1",
-      sender: "bot1",
-      name: "Bob",
-      text: "",
-      color: "#00A7B5",
-    },
-    {
-      id: "2",
-      sender: "bot2",
-      name: "Sarah",
-      text: "",
-      color: "#CA48D1",
-    },
-    {
-        id: "3",
-        sender: "bot3",
-        name: "David",
-        text: "",
-        color: "#2AF706"
-    },
-    {
-        id: "4",
-        sender: "bot4",
-        name: "Alex",
-        text: "",
-        color: "#AF8B7D"
-    },
-    {
-        id: "5",
-        sender: "bot5",
-        name: "Viola",
-        text: "Lets go there sometime!",
-        color: "#ffcd61"
-    }
-  ]);
-    
   const [activeUsername, setActiveUsername] = useState(defaultUsername);
+  const listRef = useRef(null);
 
-  
-  const [messages, setMessages] = useState([
-    {
-      id: "1",
-      sender: "bot1",
-      name: "Bob",
-      text: "yo have you tried Big Sur Grill?",
-      color: "#00A7B5",
-    },
-    {
-      id: "2",
-      sender: "bot2",
-      name: "Sarah",
-      text: "yeah that place is soooo affortable",
-      color: "#CA48D1",
-    },
-    {
-        id: "3",
-        sender: "bot3",
-        name: "David",
-        text: "That place has the best staff!",
-        color: "#2AF706"
-    },
-    {
-        id: "4",
-        sender: "bot4",
-        name: "Alex",
-        text: " I prefer The Curious Palate they have some good burgers!",
-        color: "#AF8B7D"
-    },
-    {
-        id: "5",
-        sender: "bot5",
-        name: "Viola",
-        text: "Lets go there sometime!",
-        color: "#ffcd61"
+  // ------------------------------------------------------------------
+  // Realtime & Initial Data Fetch
+  // ------------------------------------------------------------------
+  useEffect(() => {
+    // 1. Fetch initial message history from Supabase
+    async function fetchMessages() {
+      const { data, error } = await supabase
+        .from("group_messages")
+        .select("*")
+        .eq("group_id", targetGroupId)
+        .order("created_at", { ascending: true });
+
+      if (error) {
+        console.error("Error fetching initial messages:", error.message);
+      } else if (data) {
+        setMessages(data);
+      }
     }
-  ]);
 
-  const listRef = useRef();
+    fetchMessages();
 
+    // 2. Subscribe to REALTIME insert changes for this specific group room
+    const channel = supabase
+      .channel(`group-chat:${targetGroupId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "group_messages",
+          filter: `group_id=eq.${targetGroupId}`,
+        }, // realtime any time database updated reading it and refresh
+        (payload) => {
+          // Append incoming live message to state
+          setMessages((prevMessages) => {
+            // Prevent duplicate rendering if already in state
+            if (prevMessages.some((msg) => msg.id === payload.new.id)) {
+              return prevMessages;
+            }
+            return [...prevMessages, payload.new];
+          });
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscription on unmount
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [targetGroupId]);
+
+  // ------------------------------------------------------------------
+  // Message Handlers
+  // ------------------------------------------------------------------
   function handleModalChoice(selectedName) {
     setActiveUsername(selectedName);
     setShowModal(false);
-
   }
 
-  function sendMessage() {
+  async function sendMessage() {
     if (!message.trim()) return;
 
-    const userMsg = {
-    id: Date.now().toString(),
-    sender: "me",
-    name: activeUsername,
-    text: message,
-    color: "#FF2D55",
-  }; // the format the user message is in
+    const textToSend = message.trim();
+    setMessage(""); // Clear input bar immediately
 
-    setMessages((prev) => [...prev, userMsg]); // updates the user message
-        setMessage("");
-        
-    if(responseIndex < premadeResponses.length) // this function is meant to give a reponse based on if I have any premade responses left
-    {
-        const currentBot = responses[responseIndex % responses.length]; // we choose a bot from a premade list
-        const botText = premadeResponses[responseIndex]; // we choose the text from a premade response array
-        setTimeout(() => {
-      const botMsg = {
-        id: (Date.now() + 1).toString(),
-        sender: currentBot.sender,
-        name: currentBot.name,
-        text: botText,
-        color: currentBot.color,
-      };
+    // Insert message into Supabase
+    // (Supabase Realtime will automatically broadcast it back to setMessages)
+    const { error } = await supabase.from("group_messages").insert([
+      {
+        group_id: targetGroupId,
+        sender_id: user?.id,
+        sender_name: activeUsername,
+        text: textToSend,
+        color: "#FF2D55",
+      },
+    ]);
 
-      setMessages((prev) => [...prev, botMsg])
-      setResponseIndex((prevIndex)=> prevIndex +1);
-      },1000) // this function will make a variable botMsg that will set its id, sender, name, txtmsg, and color based on the attrbutes of the bot list
-                //then set that message, add one to the index to choose the next response msg added timeout to feel more "real"
+    if (error) {
+      console.error("Error sending message to Supabase:", error.message);
     }
   }
-  
+
+  // ------------------------------------------------------------------
+  // UI Renderers
+  // ------------------------------------------------------------------
   function renderMessage({ item }) {
+    const isMe = item.sender_id === user?.id;
+
     return (
       <View style={styles.messageWrapper}>
-        <Text
-          style={[
-            styles.sender,
-            {
-              color: item.color,
-            },
-          ]}
-        >
-          {item.name}
+        <Text style={[styles.sender, { color: isMe ? "#FF2D55" : item.color || "#00A7B5" }]}>
+          {item.sender_name || item.name}
         </Text>
 
-        <View
-          style={[
-            styles.messageRow,
-            {
-              borderLeftColor: item.color,
-            },
-          ]}
-        >
+        <View style={[styles.messageRow, { borderLeftColor: isMe ? "#FF2D55" : item.color || "#00A7B5" }]}>
           <Text style={styles.messageText}>{item.text}</Text>
         </View>
       </View>
@@ -187,147 +140,96 @@ export default function GroupchatScreen({ route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* POPUP MODAL */}
+      {/* Name Selection Popup Modal */}
       <AnonModal
         visible={showModal}
         currentUsername={defaultUsername}
         onSelectChoice={handleModalChoice}
       />
-      {/* HEADER */}
-       { /*
-       <View style={styles.header}>
-        <Ionicons name="chevron-back" size={32} />
 
-        <View style={styles.avatar}>
-          <Text>🙂</Text>
-        </View>
-
-        <Text style={styles.username}>{"SMFoodies"}</Text>
-
-        <View style={styles.headerIcons}>
-          <Ionicons name="call" size={23} />
-
-          <Ionicons name="videocam" size={25} />
-          <Fontisto name="map-marker-alt" size={24} color="black" />
-        </View>
-      </View> 
-        */}
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
       >
+        {/* Chat Messages List */}
         <FlatList
           ref={listRef}
           data={messages}
           renderItem={renderMessage}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => String(item.id)}
           contentContainerStyle={styles.messages}
+          onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: true })}
+          onLayout={() => listRef.current?.scrollToEnd({ animated: true })}
         />
 
-        {/* INPUT AREA */}
-
-        {/* INPUT AREA */}
-
+        {/* Input Bar */}
         <View style={styles.inputBar}>
-          {/* Camera */}
           <TouchableOpacity>
             <Ionicons name="camera" size={27} color="#000" />
           </TouchableOpacity>
 
-          {/* Text Input */}
           <TextInput
             value={message}
             onChangeText={setMessage}
             placeholder="Chat"
             style={styles.input}
             onSubmitEditing={sendMessage}
+            returnKeyType="send"
           />
 
-          {/* Dynamic Button */}
           {message.length > 0 ? (
             <TouchableOpacity onPress={sendMessage} style={styles.sendButton}>
               <Ionicons name="arrow-up" size={22} color="white" />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity>
-              <Ionicons name="mic" size={24} />
+              <Ionicons name="mic" size={24} color="#000" />
             </TouchableOpacity>
           )}
 
-          {/* Emoji */}
           <TouchableOpacity>
             <Text style={styles.emoji}>🙂</Text>
           </TouchableOpacity>
 
-          {/* Plus */}
           <TouchableOpacity>
-            <Ionicons name="add-circle-outline" size={28} />
+            <Ionicons name="add-circle-outline" size={28} color="#000" />
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
+
+// ------------------------------------------------------------------
+// Styles
+// ------------------------------------------------------------------
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
   },
-
-  header: {
-    height: 65,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 12,
-  },
-
-  avatar: {
-    height: 38,
-    width: 38,
-    borderRadius: 19,
-    backgroundColor: "#FFFC00",
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: 10,
-  },
-
-  username: {
-    fontSize: 20,
-    fontWeight: "700",
-    marginLeft: 10,
-    flex: 1,
-  },
-
-  headerIcons: {
-    flexDirection: "row",
-    gap: 18,
-  },
-
   messages: {
     paddingHorizontal: 12,
     paddingBottom: 20,
+    paddingTop: 10,
   },
-
   messageWrapper: {
     marginVertical: 7,
   },
-
   sender: {
     fontSize: 13,
     fontWeight: "700",
     marginBottom: 3,
   },
-
   messageRow: {
     borderLeftWidth: 3,
     paddingLeft: 8,
   },
-
   messageText: {
     fontSize: 18,
     color: "#222",
   },
-
   inputBar: {
     height: 55,
     flexDirection: "row",
@@ -336,8 +238,8 @@ const styles = StyleSheet.create({
     gap: 12,
     borderTopWidth: 1,
     borderColor: "#eee",
+    backgroundColor: "#fff",
   },
-
   input: {
     flex: 1,
     height: 40,
@@ -346,7 +248,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     fontSize: 17,
   },
-
   emoji: {
     fontSize: 25,
   },
@@ -359,4 +260,3 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-
