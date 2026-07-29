@@ -11,6 +11,10 @@ import {
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
+// --- IMPORTS ADDED HERE ---
+import { supabase } from "../../utils/hooks/supabase";
+import { useAuthentication } from "../../utils/hooks/useAuthentication";
+
 // --- MOCK DATA ---
 const LOCAL_TOPICS = [
   { id: "SMFoodies", name: "#SMFoodies", imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3tZSfcbr01s0QwJeiCl1oukjMRCkBONm7FZ5c7-MqXg&s", mutuals: 3, recentlyActive: "12.4k", groupchatScreen: "SMFoodies" },
@@ -28,27 +32,58 @@ const SNAP_BLACK = "#0D0D0D";
 
 export default function LocalSearchScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const { user } = useAuthentication(); // 👈 Added hook to access current user
 
-  const filteredChats = LOCAL_TOPICS.filter((topic) => { // render the array of items we want to display after they search something
-    // If the search is empty, this naturally returns all items
+  const filteredChats = LOCAL_TOPICS.filter((topic) => {
     return topic.name.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
-  function handleJoinPress(item) {
-    if (!item.groupchatScreen) return;
-    navigation.navigate(item.groupchatScreen, { chatbotName: item.name });
+  async function handleJoinPress(item) {
+    if (!user) {
+      console.warn("User is not logged in!");
+      return;
+    }
+
+    try {
+      // 1. Optional: Ensure group exists in 'groups' table to avoid foreign key issues
+      await supabase.from("groups").upsert({
+        id: item.id,
+        name: item.name,
+      });
+
+      // 2. Register the current user into 'group_members' table in Supabase
+      const displayName =
+        user?.user_metadata?.username ||
+        user?.email?.split("@")[0] ||
+        "User";
+
+      const { error } = await supabase.from("group_members").upsert({
+        group_id: item.id,
+        user_id: user.id,
+        display_name: displayName,
+      });
+
+      if (error) console.error("Error joining group:", error.message);
+    } catch (err) {
+      console.error("Unexpected error joining group:", err);
+    }
+
+    // 3. Navigate to the group chat screen with parameters
+    navigation.navigate("SMFoodies", {
+      groupId: item.id,
+      chatbotName: item.name,
+    });
   }
 
   const renderTopicChat = ({ item }) => (
     <TouchableOpacity style={styles.chatRow} activeOpacity={0.7}>
-      {/* Squircle Avatar / Icon */}
+      {/* Avatar Icon */}
       <Image source={{ uri: item.imageUrl }} style={styles.avatarPlaceholder} />
 
       {/* Chat Info */}
       <View style={styles.chatInfo}>
         <Text style={styles.chatTopic}>{item.name}</Text>
         <Text style={styles.chatMembers}>{item.mutuals} mutuals</Text>
-        {/* NEW: Stacked directly underneath the mutuals */}
         <Text style={styles.chatMembers}>{item.recentlyActive} recently active</Text>
       </View>
 
@@ -210,23 +245,18 @@ const styles = StyleSheet.create({
   chatInfo: {
     flex: 1,
     marginLeft: 14,
-  },avatarImage: {
-    width: 46,
-    height: 46,
-    borderRadius: 12,
-    backgroundColor: "#EBECEE", // Light grey placeholder before image loads
   },
   chatTopic: {
     fontSize: 16,
     fontWeight: "700",
     color: SNAP_BLACK,
-    marginBottom: 3, // Restored the bottom margin since topicRow was removed
+    marginBottom: 3,
   },
   chatMembers: {
     fontSize: 13,
     fontWeight: "500",
     color: "#8A8A8A",
-    marginTop: 2, // Added a tiny bit of spacing between the two subtext lines
+    marginTop: 2,
   },
   joinButton: {
     flexDirection: "row",
